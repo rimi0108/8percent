@@ -1,5 +1,7 @@
 import os
 
+import dj_database_url
+
 from .common import Common
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,3 +27,9 @@ class Local(Common):
     REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = [  # noqa
         "apps.core.authentications.AutoLoginAuthentication",
     ]
+
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=f"sqlite://///{BASE_DIR}/local_db.sqlite3"
+        )
+    }

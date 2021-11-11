@@ -3,7 +3,6 @@ from datetime import timedelta
 from distutils.util import strtobool
 from os.path import join
 
-import dj_database_url
 from configurations import Configuration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,6 +33,7 @@ class Common(Configuration):
         # Your apps
         "apps.users",
         "apps.core",
+        "apps.eightpercent",
     )
 
     # django-alauth
@@ -85,16 +85,6 @@ class Common(Configuration):
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
     ADMINS = (("Author", "nevvjann@gmail.com"),)
-
-    # Postgres
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=os.getenv(
-                "DATABASE_URL", "postgres://localuser:password@postgres:5432/crud"
-            ),
-            conn_max_age=int(os.getenv("POSTGRES_CONN_MAX_AGE", 600)),
-        )
-    }
 
     # General
     APPEND_SLASH = False
