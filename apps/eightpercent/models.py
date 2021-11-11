@@ -1,8 +1,7 @@
 import uuid
 
-from django.db import models
-
 from django.conf import settings
+from django.db import models
 
 
 class Account(models.Model):
@@ -11,9 +10,7 @@ class Account(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False
     )
     balance = models.DecimalField(max_digits=20, decimal_places=0, default=0)
-    customer = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT
-    )
+    customer = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 
     class Meta:
         db_table = "accounts"
@@ -25,12 +22,8 @@ class Transaction(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False, db_index=True
     )
     TransactionType = models.TextChoices("TransactionType", "WITHDRAW DEPOSIT")
-    transaction_type = models.CharField(
-        max_length=8, choices=TransactionType.choices
-    )
-    transaction_amount = models.DecimalField(
-        max_digits=20, decimal_places=0, default=0
-    )
+    transaction_type = models.CharField(max_length=8, choices=TransactionType.choices)
+    transaction_amount = models.DecimalField(max_digits=20, decimal_places=0, default=0)
     transaction_date = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=20)
     account = models.ForeignKey("Account", on_delete=models.PROTECT)
