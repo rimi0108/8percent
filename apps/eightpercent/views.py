@@ -68,4 +68,8 @@ class WithdrawView(CreateAPIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
-        serializer.save(transaction_type=Transaction.TransactionTypes.WITHDRAW)
+        account = Account.objects.get(customer=self.request.user.id)
+        serializer.save(
+            account=account,
+            transaction_type=Transaction.TransactionTypes.WITHDRAW,
+        )

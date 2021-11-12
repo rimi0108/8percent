@@ -17,3 +17,11 @@ class AccountAdmin(admin.ModelAdmin):
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     """Transaction Model Admin"""
+
+    list_display = (
+        "transaction_type",
+        "transaction_amount",
+        "transaction_date",
+        "description",
+        "account",
+    )

@@ -20,14 +20,14 @@ class WithdrawSerializer(ModelSerializer):
             "account",
             "remaining_balance",
         )
-        read_only_fields = ("transaction_type", "remaining_balance")
+        read_only_fields = ("transaction_type", "account", "remaining_balance")
 
     def get_remaining_balance(self, obj):
         # return round(obj.account.balance - obj.transaction_amount)
         return int(obj.account.balance)
 
     def validate(self, attrs):
-        account_number = attrs.get("account")
+        account_number = self.context.get("request").user.account
         amount = attrs.get("transaction_amount")
 
         if amount > account_number.balance:
