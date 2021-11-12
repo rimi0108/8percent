@@ -27,10 +27,3 @@ class ReadAccountSerializer(ModelSerializer):
             "balance",
             "customer_name",
         )
-
-
-class CreateAccountSerializer(ModelSerializer):
-    class Meta:
-        model = Account
-        fields = ("balance",)
-        read_only_fields = ("balance",)
