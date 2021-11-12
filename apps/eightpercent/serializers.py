@@ -7,6 +7,16 @@ from rest_framework.serializers import (
 
 from apps.eightpercent.models import Account, Transaction
 
+class TransactionSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = (
+            "transaction_type",
+            "transaction_amount",
+            "transaction_date",
+            "description",
+            "account",
+        )  
 
 class WithdrawSerializer(ModelSerializer):
     remaining_balance = SerializerMethodField()
