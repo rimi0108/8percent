@@ -1,13 +1,17 @@
 from datetime import datetime, timedelta
 
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView,  ListAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.eightpercent.models import Account, Transaction
-from apps.eightpercent.serializers import ReadAccountSerializer,TransactionSerializer, WithdrawSerializer
+from apps.eightpercent.serializers import (
+    ReadAccountSerializer,
+    TransactionSerializer,
+    WithdrawSerializer,
+)
 
 
 class AccountView(CreateModelMixin, ListModelMixin, GenericAPIView):
@@ -69,11 +73,7 @@ class TransactionView(ListAPIView):
         # get query params
         transaction_type = self.request.query_params.get("transaction_type")
         start_day = self.request.query_params.get("start_day")
-        # add one day to end_day
         end_day = self.request.query_params.get("end_day")
-        strp_end_day = datetime.strptime(end_day, "%Y-%m-%d")
-        modified_day = strp_end_day + timedelta(days=1)
-        end_day = datetime.strftime(modified_day, "%Y-%m-%d")
         ordering = self.request.query_params.get("ordering")
 
         filter_kwargs = {"account": account_number}
@@ -83,6 +83,10 @@ class TransactionView(ListAPIView):
 
         if (start_day is not None) and (end_day is not None):
             filter_kwargs["transaction_date__gte"] = start_day
+            # add one day to end_day
+            strp_end_day = datetime.strptime(end_day, "%Y-%m-%d")
+            modified_day = strp_end_day + timedelta(days=1)
+            end_day = datetime.strftime(modified_day, "%Y-%m-%d")
             filter_kwargs["transaction_date__lte"] = end_day
 
         queryset = queryset.filter(**filter_kwargs)
