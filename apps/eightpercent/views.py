@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta
 
-from rest_framework import status
+from rest_framework import mixins, status, viewsets
 from rest_framework.generics import CreateAPIView, GenericAPIView,  ListAPIView
 from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.eightpercent.models import Account, Transaction
-from apps.eightpercent.serializers import ReadAccountSerializer,TransactionSerializer, WithdrawSerializer
+from apps.eightpercent.serializers import DepositSerializer, ReadAccountSerializer,TransactionSerializer, WithdrawSerializer
 
 
 class AccountView(CreateModelMixin, ListModelMixin, GenericAPIView):
@@ -91,6 +91,12 @@ class TransactionView(ListAPIView):
             queryset = queryset.order_by("-transaction_date")
 
         return super().filter_queryset(queryset)
+
+
+class DepositViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    queryset = Transaction.objects.all()
+    serializer_class = DepositSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class WithdrawView(CreateAPIView):
