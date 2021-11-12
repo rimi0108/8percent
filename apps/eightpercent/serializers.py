@@ -1,15 +1,40 @@
-from rest_framework.serializers import ModelSerializer, StringRelatedField
+from rest_framework.serializers import (
+    ModelSerializer,
+    SerializerMethodField,
+    StringRelatedField,
+    ValidationError,
+)
 
 from apps.eightpercent.models import Account, Transaction
 
 
 class WithdrawSerializer(ModelSerializer):
+    remaining_balance = SerializerMethodField()
+
     class Meta:
         model = Transaction
         fields = (
+            "transaction_type",
             "transaction_amount",
             "description",
+            "account",
+            "remaining_balance",
         )
+        read_only_fields = ("transaction_type", "remaining_balance")
+
+    def get_remaining_balance(self, obj):
+        # return round(obj.account.balance - obj.transaction_amount)
+        return int(obj.account.balance)
+
+    def validate(self, attrs):
+        account_number = attrs.get("account")
+        amount = attrs.get("transaction_amount")
+
+        if amount > account_number.balance:
+            raise ValidationError("Balance is not enough.")
+        account_number.balance = account_number.balance - amount
+        account_number.save()
+        return attrs
 
 
 class ReadAccountSerializer(ModelSerializer):

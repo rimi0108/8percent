@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.eightpercent.models import Account
+from apps.eightpercent.models import Account, Transaction
 
 
 @admin.register(Account)
@@ -12,3 +12,8 @@ class AccountAdmin(admin.ModelAdmin):
         "balance",
         "customer",
     )
+
+
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    """Transaction Model Admin"""

@@ -1,11 +1,11 @@
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.eightpercent.models import Account
-from apps.eightpercent.serializers import ReadAccountSerializer
+from apps.eightpercent.models import Account, Transaction
+from apps.eightpercent.serializers import ReadAccountSerializer, WithdrawSerializer
 
 
 class AccountView(CreateModelMixin, ListModelMixin, GenericAPIView):
@@ -51,3 +51,21 @@ class AccountView(CreateModelMixin, ListModelMixin, GenericAPIView):
     def perform_create(self, serializer):
 
         serializer.save(customer=self.request.user, balance=0)
+
+
+class WithdrawView(CreateAPIView):
+    serializer_class = WithdrawSerializer
+    queryset = None
+    permissions = IsAuthenticated
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data=request.data,
+        )
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        serializer.save(transaction_type=Transaction.TransactionTypes.WITHDRAW)
