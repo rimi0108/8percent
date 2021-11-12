@@ -3,6 +3,8 @@ from datetime import timedelta
 from distutils.util import strtobool
 from os.path import join
 
+import dj_database_url
+
 from configurations import Configuration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -217,7 +219,11 @@ class Common(Configuration):
             "django.db.backends": {"handlers": ["console"], "level": "INFO"},
         },
     }
-
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=f"sqlite://///{BASE_DIR}/local_db.sqlite3"
+        )
+    }
     # Custom user app
     AUTH_USER_MODEL = "users.User"
 

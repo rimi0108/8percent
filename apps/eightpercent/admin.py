@@ -1,3 +1,14 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# # Register your models here.
+from apps.eightpercent.models import Account
+
+
+@admin.register(Account)
+class AccountAdmin(admin.ModelAdmin):
+    """Accont Model Admin"""
+
+    list_display = (
+        "account_number",
+        "balance",
+        "customer",
+    )
