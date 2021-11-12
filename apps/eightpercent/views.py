@@ -103,6 +103,23 @@ class DepositViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = DepositSerializer
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data=request.data,
+        )
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return Response(serializer.data)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        account = Account.objects.get(customer=self.request.user.id)
+        serializer.save(
+            account=account,
+            transaction_type=Transaction.TransactionTypes.DEPOSIT,
+        )
+
 
 class WithdrawView(CreateAPIView):
     serializer_class = WithdrawSerializer

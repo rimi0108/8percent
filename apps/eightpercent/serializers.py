@@ -38,6 +38,7 @@ class DepositSerializer(serializers.ModelSerializer):
             "transaction_type",
             "transaction_date",
             "account_balance",
+            "account",
         )
 
     def get_account_balance(self, obj):
@@ -45,6 +46,11 @@ class DepositSerializer(serializers.ModelSerializer):
         obj.account.balance = account_balance
         obj.account.save()
         return account_balance
+
+    def validate(self, attrs):
+        if attrs.get("transaction_amount") < 0:
+            raise ValidationError("Amount cannot be negative value.")
+        return super().validate(attrs)
 
 
 class WithdrawSerializer(ModelSerializer):
