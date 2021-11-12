@@ -74,11 +74,7 @@ class TransactionView(ListAPIView):
         # get query params
         transaction_type = self.request.query_params.get("transaction_type")
         start_day = self.request.query_params.get("start_day")
-        # add one day to end_day
         end_day = self.request.query_params.get("end_day")
-        strp_end_day = datetime.strptime(end_day, "%Y-%m-%d")
-        modified_day = strp_end_day + timedelta(days=1)
-        end_day = datetime.strftime(modified_day, "%Y-%m-%d")
         ordering = self.request.query_params.get("ordering")
 
         filter_kwargs = {"account": account_number}
@@ -88,6 +84,10 @@ class TransactionView(ListAPIView):
 
         if (start_day is not None) and (end_day is not None):
             filter_kwargs["transaction_date__gte"] = start_day
+            # add one day to end_day
+            strp_end_day = datetime.strptime(end_day, "%Y-%m-%d")
+            modified_day = strp_end_day + timedelta(days=1)
+            end_day = datetime.strftime(modified_day, "%Y-%m-%d")
             filter_kwargs["transaction_date__lte"] = end_day
 
         queryset = queryset.filter(**filter_kwargs)
