@@ -11,7 +11,7 @@ from apps.eightpercent.serializers import ReadAccountSerializer, WithdrawSeriali
 class AccountView(CreateModelMixin, ListModelMixin, GenericAPIView):
 
     queryset = None
-    permission_class = IsAuthenticated
+    permission_class = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -56,7 +56,7 @@ class AccountView(CreateModelMixin, ListModelMixin, GenericAPIView):
 class WithdrawView(CreateAPIView):
     serializer_class = WithdrawSerializer
     queryset = None
-    permissions = IsAuthenticated
+    permissions_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(

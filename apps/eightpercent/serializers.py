@@ -29,7 +29,8 @@ class WithdrawSerializer(ModelSerializer):
     def validate(self, attrs):
         account_number = self.context.get("request").user.account
         amount = attrs.get("transaction_amount")
-
+        if amount < 0:
+            raise ValidationError("Amount cannot be negative value.")
         if amount > account_number.balance:
             raise ValidationError("Balance is not enough.")
         account_number.balance = account_number.balance - amount
