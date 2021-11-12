@@ -71,7 +71,7 @@ class Common(Configuration):
         "django.middleware.security.SecurityMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
-        # "django.middleware.csrf.CsrfViewMiddleware",
+        "django.middleware.csrf.CsrfViewMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -238,7 +238,12 @@ class Common(Configuration):
             "rest_framework.permissions.IsAuthenticated",
         ],
         "DEFAULT_AUTHENTICATION_CLASSES": (
-            # "rest_framework.authentication.SessionAuthentication",
             "rest_framework.authentication.TokenAuthentication",
         ),
     }
+
+
+# Cookies
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
