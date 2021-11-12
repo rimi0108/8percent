@@ -12,6 +12,7 @@ api_v1_urls = router.urls
 
 api_v1_urls += [
     path("users/", include("apps.users.urls")),
+    path("", include("apps.eightpercent.urls")),
     path("accounts/", include("dj_rest_auth.urls")),
     path("accounts/", include("dj_rest_auth.registration.urls")),
 ]
