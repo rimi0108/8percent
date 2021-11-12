@@ -218,7 +218,7 @@ class Common(Configuration):
             "django.db.backends": {"handlers": ["console"], "level": "INFO"},
         },
     }
-    LOCAL_DB_PATH = os.path.join(os.path.split(BASE_DIR)[0], "local_db.sqlite3")
+    LOCAL_DB_PATH = os.path.join(os.path.dirname(BASE_DIR), "local_db.sqlite3")
     DATABASES = {
         "default": dj_database_url.config(default=f"sqlite://///{LOCAL_DB_PATH}")
     }
