@@ -1,8 +1,19 @@
 from rest_framework import serializers
 
-from apps.eightpercent.models import Account, Transaction
+from apps.eightpercent.models import Transaction
+
+# class CurrentUserDefault:
+#     requires_context = True
+
+#     def __call__(self, serializer_field):
+#         return serializer_field.context['request'].user
+
+#     def __repr__(self):
+#         return '%s()' % self.__class__.__name__
+
 
 class DepositSerializer(serializers.ModelSerializer):
+    # account = serializers.HiddenField(default=serializers.CurrentUserDefault())
     transaction_type = serializers.CharField(default="DEPOSIT")
     account_balance = serializers.SerializerMethodField()
 
@@ -10,7 +21,7 @@ class DepositSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = (
             "account",
-            "transaction_type", 
+            "transaction_type",
             "transaction_amount",
             "description",
             "account_balance",
@@ -26,4 +37,3 @@ class DepositSerializer(serializers.ModelSerializer):
         obj.account.balance = account_balance
         obj.account.save()
         return account_balance
-    
