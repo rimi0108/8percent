@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
-from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny
 
 from apps.eightpercent.models import Transaction
 from apps.eightpercent.serializers import TransactionSerializer
@@ -9,6 +9,7 @@ from apps.eightpercent.serializers import TransactionSerializer
 
 class TransactionView(ListAPIView):
     """User Transaction View"""
+
     permission_classes = [AllowAny]
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
@@ -29,16 +30,16 @@ class TransactionView(ListAPIView):
 
         filter_kwargs = {"account": account_number}
 
-        if (transaction_type == 'DEPOSIT') or (transaction_type == 'WITHDRAW'):
-            filter_kwargs['transaction_type'] = transaction_type
+        if (transaction_type == "DEPOSIT") or (transaction_type == "WITHDRAW"):
+            filter_kwargs["transaction_type"] = transaction_type
 
         if (start_day is not None) and (end_day is not None):
-            filter_kwargs['transaction_date__gte'] = start_day
-            filter_kwargs['transaction_date__lte'] = end_day
+            filter_kwargs["transaction_date__gte"] = start_day
+            filter_kwargs["transaction_date__lte"] = end_day
 
         queryset = queryset.filter(**filter_kwargs)
 
-        if (ordering == 'True') or (ordering == 'true'):
+        if (ordering == "True") or (ordering == "true"):
             queryset = queryset.order_by("-transaction_date")
 
         return super().filter_queryset(queryset)

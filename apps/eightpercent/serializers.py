@@ -4,7 +4,6 @@ from apps.eightpercent.models import Transaction
 
 
 class TransactionSerializer(ModelSerializer):
-
     class Meta:
         model = Transaction
         fields = (
@@ -12,5 +11,5 @@ class TransactionSerializer(ModelSerializer):
             "transaction_amount",
             "transaction_date",
             "description",
-            "account"
+            "account",
         )
