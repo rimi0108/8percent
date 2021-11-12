@@ -2,18 +2,28 @@ from rest_framework import serializers
 
 from apps.eightpercent.models import Transaction
 
-# class CurrentUserDefault:
-#     requires_context = True
+from rest_framework.serializers import (
+    ModelSerializer,
+    SerializerMethodField,
+    StringRelatedField,
+    ValidationError,
+)
 
-#     def __call__(self, serializer_field):
-#         return serializer_field.context['request'].user
+from apps.eightpercent.models import Account, Transaction
 
-#     def __repr__(self):
-#         return '%s()' % self.__class__.__name__
+class TransactionSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = (
+            "transaction_type",
+            "transaction_amount",
+            "transaction_date",
+            "description",
+            "account",
+        )  
 
 
 class DepositSerializer(serializers.ModelSerializer):
-    # account = serializers.HiddenField(default=serializers.CurrentUserDefault())
     transaction_type = serializers.CharField(default="DEPOSIT")
     account_balance = serializers.SerializerMethodField()
 
@@ -37,3 +47,49 @@ class DepositSerializer(serializers.ModelSerializer):
         obj.account.balance = account_balance
         obj.account.save()
         return account_balance
+
+
+class WithdrawSerializer(ModelSerializer):
+    remaining_balance = SerializerMethodField()
+
+    class Meta:
+        model = Transaction
+        fields = (
+            "transaction_type",
+            "transaction_amount",
+            "description",
+            "account",
+            "remaining_balance",
+        )
+        read_only_fields = ("transaction_type", "account", "remaining_balance")
+
+    def get_remaining_balance(self, obj):
+        return int(obj.account.balance)
+
+    def validate(self, attrs):
+        account_number = self.context.get("request").user.account
+        amount = attrs.get("transaction_amount")
+        if amount < 0:
+            raise ValidationError("Amount cannot be negative value.")
+        if amount > account_number.balance:
+            raise ValidationError("Balance is not enough.")
+        account_number.balance = account_number.balance - amount
+        account_number.save()
+        return attrs
+
+
+class ReadAccountSerializer(ModelSerializer):
+    customer_name = StringRelatedField(source="customer")
+
+    class Meta:
+        model = Account
+        fields = (
+            "account_number",
+            "balance",
+            "customer_name",
+        )
+        read_only_fields = (
+            "account_number",
+            "balance",
+            "customer_name",
+        )
