@@ -28,8 +28,7 @@ class Local(Common):
         "apps.core.authentications.AutoLoginAuthentication",
     ]
 
+    LOCAL_DB_PATH = os.path.join(os.path.split(BASE_DIR)[0], "local_db.sqlite3")
     DATABASES = {
-        "default": dj_database_url.config(
-            default=f"sqlite://///{BASE_DIR}/local_db.sqlite3"
-        )
+        "default": dj_database_url.config(default=f"sqlite://///{LOCAL_DB_PATH}")
     }
