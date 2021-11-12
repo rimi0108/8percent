@@ -4,7 +4,7 @@
 
   <h2 align="center">🍴 Team 제6볶음 🍴</h2>
   <p align="center" width="50%">
-  <img src="https://user-images.githubusercontent.com/73830753/141292063-a61a979d-4178-4e60-a472-df12c270bb80.jpg"/>
+  <img width="60%" src="https://user-images.githubusercontent.com/73830753/141292063-a61a979d-4178-4e60-a472-df12c270bb80.jpg"/>
   <p align="center">
     각기 다른 재료가 모여 맛있는 제육볶음을 만들듯,<br>
     서로 다른 개성있는 개인이 모여 멋진 결과물을 만들어내는 Team 제6볶음입니다.
@@ -21,7 +21,7 @@
 | 신우주 | [shinwooju](https://github.com/shinwooju) | 개인 사정으로 불참       |
 | 최혜림 | [rimi0108](https://github.com/rimi0108)   | 거래 내역 조회 api       |
 | 강성묵 | [miranaky](https://github.com/miranaky)   | 전체 총괄, 계좌 출금 api |
-| 김민규 | [SkyStar-K](https://github.com/SkyStar-K) |                          |
+| 김민규 | [SkyStar-K](https://github.com/SkyStar-K) | 계좌 입금 API          |
 
 ## ⭐ 과제 출제 기업 정보
 
@@ -30,6 +30,10 @@
 - [wanted 채용공고 링크](https://www.wanted.co.kr/wd/64695)
 
 ## ⭐ 과제 내용
+
+
+<details>
+    <summary>내용 보기</summary>
 
 ### **[필수 포함 사항]**
 
@@ -118,6 +122,10 @@
 - 거래내역이 1억건을 넘어갈 때에 대한 고려
   - 이를 고려하여 어떤 설계를 추가하셨는지를 README에 남겨 주세요.
 
+</details>
+
+
+
 ## 🛠 사용 기술 및 tools
 
 > - Back-End : <img src="https://img.shields.io/badge/Python 3.8-3776AB?style=for-the-badge&logo=Python&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Django 3.2-092E20?style=for-the-badge&logo=Django&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=SQLite&logoColor=white"/>
@@ -130,12 +138,17 @@
 
 ## 🖇 API
 
-[Postman API Document](https://documenter.getpostman.com/view/13670333/UVC5F7t1)
+[Postman API Document](https://documenter.getpostman.com/view/13670333/UVC8CRde)
 
-## Coverage
+
+## 설치 및 실행 방법
 
 ```
-$ pytest --cov
+$ git clone https://github.com/JE6BOKM/8percent.git && cd 8percent
+$ poetry shell
+$ poetry install
+$ export DJANGO_SECRET_KEY=oa&8a6swp0y)muhd0%g%f2p4u&e4r_12ar6g6*vqmc5=ty1z&)
+$ python manage.py runserver
 ```
 
 ## 구현 기능
@@ -143,35 +156,124 @@ $ pytest --cov
 ### 유저 회원가입 및 로그인
 
 ### 회원 별 계좌 생성
+- 로그인 된 유저만 해당 기능을 사용할 수 있습니다.
+- User는 1개의 Account(계좌)를 만들 수 있습니다.
+    - /eightpercent/account 에 POST Request로 계좌를 생성합니다.
+    - 기존에 생성된 계좌가 있으면 이미 있다는 메세지와 함꼐 400 Bad Request return 됩니다.
+- User는 자신의 Account(계좌)를 볼 수 있습니다.
+    - /eightpercent/account 에 GET Request로 요청
+    - 자신의 계좌번호와, 잔액, 그리고 고객 이름을 확인 할 수 있습니다.
 
 ### 입금
+- User 에게 입금 금액, 적요를 입력받습니다.
+- User는 이미 계좌가 생성되어 있어야 합니다.
+- 계좌에 입금 요청이 되면 Transaction을 기록합니다.
+    - 계좌의 balance에서 요청된 금액 만큼 더합니다.
+- 성공적으로 입금이 완료되면 다음 내용이 표기됩니다.
+    - transaction_type: DEPOSIT
+    - transaction_amount
+    - description
+    - account
+    - account_balance
 
 ### 출금
+- User 에게 출금 금액, 적요를 입력받습니다.
+- User는 이미 계좌가 생성되어 있어야 합니다.
+- 계좌에 출금 요청 금액보다 잔액이 많이 남아있으면 Transaction을 기록합니다.
+    - 계좌의 balance에서 요청된 금액 만큼 뺍니다.
+    - Transaction을 기록합니다.
+    - 요청된 금액이 계좌의 잔액보다 많으면 Transaction을 기록하지 않고 400 bad request 를 리턴합니다.
+    - 음수의 값으로 요청을 하면 Transaction을 기록하지 않고 400 bad request를 리턴합니다.
+- 성공적으로 출금이 완료되면 다음 내용이 표기됩니다.
+    - transaction_type :withdraw
+    - transaction_amount
+    - description
+    - account
+    - remaining_balance
 
 ### 거래내역 조회
+- user에 해당하는 account만 조회할 수 있도록 token을 통해 받은 user 정보를 통해 account 정보를 받아옵니다.
+- user가 만들지 않은 account의 거래 내역은 조회할 수 없습니다.
+- 조회 내역은 10개씩 pagination되도록 구현했습니다.
+- filtering
+    - query parameter로 transaction_type을 받아 입금, 출금 타입을 선택하여 filtering 할 수 있도록 구현하였습니다.
+    - start_day와 end_day을 query parameter로 받아 거래 기간을 선택하여 filtering 할 수 있도록 구현하였습니다.
+        - end_day는 넣을 시 0시로 계산되어 들어가기 때문에 end_day에 1을 더하여 filtering 하였습니다.
+            - ex) 2021-11-12일로 end_day를 지정하였을 시 2021-11-12 00:00시로 지정되어 들어가기 때문에 12일 00:00시 이전 정보까지 출력됩니다.
+    - default로 최근 거래내역이 위로 올라가게 조회되기 때문에 거래내역 역순으로 조회 가능하게 ordering=True를 query parameter로 받을 수 있게 하였습니다.
 
-## 설치 및 실행 방법
 
-</br>
+## Ploblems
+> *고려 단계에 있는 내용입니다.*
 
-### Local 개발 및 테스트용
+### ❓ 거래내역이 1억건을 넘어갈 때에 대한 고려
+거래 내역이 1억건이 넘어갈 경우 데이터 조회 시간에 이슈가 있습니다.
+### Solutions
+- **DB Indexing**: 거래내역은 데이터의 수정삭제가 거의 없는 자료 입니다. 수정이 적고 조회가 많을 때 효과적인 Indexing을 활용 할 수 있습니다. B-Tree 등의 알고리즘을 사용하기 때문에 빠르고 현프로젝트에는 고유한 값인 트랜잭션 id에 적용을 생각 하고 있습니다.
+- **Cache**: 일정 주기 혹은 특정 시점에 자주 조회되는 특정 범위의 거래내역을 케시에 저장해두어 DB 조회를 줄여 조회 속도를 높힐 수 있습니다.
 
-```bash
-    # git clone
-    git clone https://github.com/JE6BOKM/wanted.git && cd wanted
-
-    # 실행
-    docker-compose -f docker/compose/local.yml up
-```
-
-### 배포용
-
-```bash
-    # 실행
-    docker-compose -f docker/compose/prod.yml up
-```
 
 ## 📁 폴더 구조
+```
+.
+├── Makefile
+├── README.md
+├── apps
+│   ├── config
+│   │   ├── common.py
+│   │   ├── local.py
+│   │   ├── production.py
+│   │   └── test.py
+│   ├── core
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── authentications.py
+│   │   ├── management
+│   │   ├── migrations
+│   │   └── serializers.py
+│   ├── eightpercent
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── migrations
+│   │   ├── models.py
+│   │   ├── permissions.py
+│   │   ├── serializers.py
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── local_db.sqlite3
+│   ├── urls.py
+│   ├── users
+│   │   ├── admin.py
+│   │   ├── migrations
+│   │   ├── models.py
+│   │   ├── permissions.py
+│   │   ├── serializers.py
+│   │   ├── tests
+│   │   ├── urls.py
+│   │   └── views.py
+│   └── wsgi.py
+├── conftest.py
+├── docker
+│   ├── compose
+│   │   ├── local.yml
+│   │   └── prod.yml
+│   └── images
+│       ├── local
+│       └── prod
+├── manage.py
+├── mkdocs.yml
+├── poetry.lock
+├── pyproject.toml
+├── pytest.ini
+├── setup.cfg
+├── test
+│   ├── factories
+│   │   └── users.py
+│   └── schema
+│       └── users.py
+└── wait_for_postgres.py
+```
 
 # Reference
 
