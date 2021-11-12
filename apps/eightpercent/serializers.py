@@ -1,7 +1,4 @@
 from rest_framework import serializers
-
-from apps.eightpercent.models import Transaction
-
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
@@ -10,6 +7,7 @@ from rest_framework.serializers import (
 )
 
 from apps.eightpercent.models import Account, Transaction
+
 
 class TransactionSerializer(ModelSerializer):
     class Meta:
@@ -20,7 +18,7 @@ class TransactionSerializer(ModelSerializer):
             "transaction_date",
             "description",
             "account",
-        )  
+        )
 
 
 class DepositSerializer(serializers.ModelSerializer):

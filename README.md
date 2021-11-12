@@ -6,8 +6,8 @@
   <p align="center" width="50%">
   <img src="https://user-images.githubusercontent.com/73830753/141292063-a61a979d-4178-4e60-a472-df12c270bb80.jpg"/>
   <p align="center">
-    각기 다른 재료가 모여 맛있는 제육볶음을 만들듯,<br> 
-    서로 다른 개성있는 개인이 모여 멋진 결과물을 만들어내는 Team 제6볶음입니다. 
+    각기 다른 재료가 모여 맛있는 제육볶음을 만들듯,<br>
+    서로 다른 개성있는 개인이 모여 멋진 결과물을 만들어내는 Team 제6볶음입니다.
   </p>
   </p>
 
