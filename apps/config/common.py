@@ -238,7 +238,12 @@ class Common(Configuration):
             "rest_framework.permissions.IsAuthenticated",
         ],
         "DEFAULT_AUTHENTICATION_CLASSES": (
-            "rest_framework.authentication.SessionAuthentication",
             "rest_framework.authentication.TokenAuthentication",
         ),
     }
+
+
+# Cookies
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
