@@ -203,7 +203,7 @@ $ python manage.py runserver
     - default로 최근 거래내역이 위로 올라가게 조회되기 때문에 거래내역 역순으로 조회 가능하게 ordering=True를 query parameter로 받을 수 있게 하였습니다.
 
 
-## Ploblems
+## Problem
 > *고려 단계에 있는 내용입니다.*
 
 ### ❓ 거래내역이 1억건을 넘어갈 때에 대한 고려
